@@ -1,3 +1,6 @@
+from datetime import datetime
+from decimal import Decimal
+
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -25,3 +28,32 @@ class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
     utilisateur: UtilisateurOut
+
+
+class FilmOut(BaseModel):
+    id: int
+    titre: str
+    description: str | None
+    duree_minutes: int
+    categorie: str | None
+
+
+class SeanceOut(BaseModel):
+    id: int
+    film_id: int
+    titre_film: str
+    salle: str
+    date_heure_debut: datetime
+    tarif: Decimal
+    places_total: int
+    places_libres: int
+
+
+class PlaceOut(BaseModel):
+    id: int
+    numero_place: int
+    statut: str
+
+
+class SeanceDetailOut(SeanceOut):
+    places: list[PlaceOut]

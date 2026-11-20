@@ -42,7 +42,7 @@ def get_current_user(
         )
         user_id = int(payload["sub"])
     except (jwt.PyJWTError, KeyError, ValueError):
-        raise erreur
+        raise erreur from None
     user = conn.execute(
         "SELECT id, nom, prenom, email, role FROM utilisateurs WHERE id = %s", (user_id,)
     ).fetchone()

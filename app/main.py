@@ -7,6 +7,7 @@ from app.config import get_settings
 from app.database import close_pool
 from app.routers import auth, films, programmation, remplissage, reservations, seances
 
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     yield

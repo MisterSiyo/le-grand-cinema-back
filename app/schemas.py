@@ -74,3 +74,24 @@ class BilletOut(BaseModel):
     date_heure_debut: datetime
     numero_place: int
     tarif: Decimal
+
+
+class FilmIn(BaseModel):
+    titre: str = Field(min_length=1, max_length=255)
+    description: str | None = None
+    duree_minutes: int = Field(gt=0, le=600)
+    categorie: str | None = Field(default=None, max_length=100)
+
+
+class SeanceIn(BaseModel):
+    film_id: int
+    salle: str = Field(min_length=1, max_length=50)
+    date_heure_debut: datetime
+    tarif: Decimal = Field(ge=0, max_digits=6, decimal_places=2)
+    nb_places: int = Field(default=50, ge=1, le=500)
+
+
+class SeanceUpdateIn(BaseModel):
+    salle: str = Field(min_length=1, max_length=50)
+    date_heure_debut: datetime
+    tarif: Decimal = Field(ge=0, max_digits=6, decimal_places=2)

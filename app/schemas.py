@@ -57,3 +57,20 @@ class PlaceOut(BaseModel):
 
 class SeanceDetailOut(SeanceOut):
     places: list[PlaceOut]
+
+
+class ReservationIn(BaseModel):
+    seance_id: int
+    place_id: int
+
+
+class BilletOut(BaseModel):
+    id: int
+    code_billet: str
+    statut: str
+    date_reservation: datetime
+    titre_film: str
+    salle: str
+    date_heure_debut: datetime
+    numero_place: int
+    tarif: Decimal

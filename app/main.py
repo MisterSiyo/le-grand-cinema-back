@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import close_pool
-from app.routers import auth, films, programmation, reservations, seances
+from app.routers import auth, films, programmation, remplissage, reservations, seances
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -32,6 +32,7 @@ app.include_router(films.router)
 app.include_router(seances.router)
 app.include_router(reservations.router)
 app.include_router(programmation.router)
+app.include_router(remplissage.router)
 
 
 @app.get("/health", tags=["Technique"])

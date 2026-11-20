@@ -22,7 +22,7 @@ def inscription(data: InscriptionIn, conn: Connection = Depends(get_connection))
             (data.nom, data.prenom, data.email.lower(), hash_password(data.mot_de_passe)),
         ).fetchone()
     except UniqueViolation:
-        raise HTTPException(status.HTTP_409_CONFLICT, "Cette adresse email est déjà utilisée")
+        raise HTTPException(status.HTTP_409_CONFLICT, "Cette adresse email est déjà utilisée") from None
     return TokenOut(access_token=create_token(user["id"], user["role"]), utilisateur=user)
 
 

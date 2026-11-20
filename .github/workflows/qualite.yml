@@ -1,0 +1,24 @@
+name: Qualité du code
+
+on:
+  push:
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  qualite:
+    runs-on: ubuntu-latest
+    env:
+      # Valeurs factices : les tests lancés ici n'utilisent pas la base
+      DATABASE_URL: postgresql://test:test@localhost/test
+      JWT_SECRET: secret-de-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements-dev.txt ruff
+      - name: Analyse statique avec Ruff
+        run: ruff check app tests
+      - name: Tests unitaires et couverture
+        run: pytest -m "not db" --cov=app --cov-report=term

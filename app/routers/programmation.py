@@ -83,7 +83,7 @@ def creer_seance(data: SeanceIn, conn: Connection = Depends(get_connection)):
             (data.film_id, data.salle, data.date_heure_debut, data.tarif),
         ).fetchone()["id"]
     except ForeignKeyViolation:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Film introuvable")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Film introuvable") from None
     conn.execute(
         "INSERT INTO places (seance_id, numero_place) SELECT %s, generate_series(1, %s)",
         (seance_id, data.nb_places),

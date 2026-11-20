@@ -27,7 +27,7 @@ def reserver(
 ):
     """Réserve une place pour l'utilisateur connecté et renvoie son billet."""
     place = conn.execute(
-        "SELECT id, statut FROM places WHERE id = %s AND seance_id = %s",
+        "SELECT id FROM places WHERE id = %s AND seance_id = %s",
         (data.place_id, data.seance_id),
     ).fetchone()
     if place is None:
@@ -39,10 +39,16 @@ def reserver(
     if not seance["a_venir"]:
         raise HTTPException(status.HTTP_409_CONFLICT, "Cette séance est déjà commencée")
 
-    if place["statut"] != "LIBRE":
+    # Le contrôle du statut et la réservation se font en une seule requête : PostgreSQL verrouille
+    # la ligne, donc si deux demandes arrivent en même temps, la seconde attend puis ne trouve
+    # plus de place LIBRE. Un simple SELECT suivi d'un UPDATE laissait passer les deux.
+    reservee = conn.execute(
+        "UPDATE places SET statut = 'RESERVEE' WHERE id = %s AND statut = 'LIBRE' RETURNING id",
+        (place["id"],),
+    ).fetchone()
+    if reservee is None:
         raise HTTPException(status.HTTP_409_CONFLICT, "Cette place n'est plus disponible")
 
-    conn.execute("UPDATE places SET statut = 'RESERVEE' WHERE id = %s", (place["id"],))
     reservation_id = conn.execute(
         """
         INSERT INTO reservations (utilisateur_id, seance_id, place_id, code_billet)
